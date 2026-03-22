@@ -13,7 +13,11 @@ import { createPost as createPostService } from '../../services/postService';
 import { deletePost as deletePostService } from '../../services/postService';
 import { updatePost as updatePostService } from '../../services/postService';
 
-export default function Home() {
+interface HomeProps {
+    toggleTheme: () => void;
+    isDark: boolean;
+}
+export default function Home({ toggleTheme, isDark }: HomeProps) {
     const [search, setSearch] = useState<string>('');
     const [editingPost, setEditingPost] = useState<Post | null>(null)
 
@@ -120,14 +124,21 @@ export default function Home() {
     }, [fetchNextPage, hasNextPage]);
 
     return (
-        <div className="home-page">
+        <div className="min-h-screen flex flex-col bg-gradient-to-b from-[var(--color-bg-primary)] via-[var(--color-bg-secondary)] to-[var(--color-bg-primary)] font-[Inter,system-ui,sans-serif] text-[var(--color-text-primary)]">
             {/* Header */}
-            <header className="home-header">
-                <h1 className="home-header__logo">Mini Twitter</h1>
+            <header className="flex items-center justify-between py-3.5 px-8 bg-[var(--color-bg-header)] backdrop-blur-md border-b border-[var(--color-border)] sticky top-0 z-50">
+                <h1 className="text-lg font-bold text-[var(--color-text-primary)] whitespace-nowrap">Mini Twitter</h1>
                 <SearchInput placeholder="Buscar por post..." onChange={handleSearch} />
                 <button
                     type="button"
-                    className="home-header__logout"
+                    onClick={toggleTheme}
+                    title="Alternar tema"
+                >
+                    {isDark ? '☀️' : '🌙'}
+                </button>
+                <button
+                    type="button"
+                    className="flex items-center justify-center p-2 text-[var(--color-text-muted)] bg-transparent border-none rounded-lg cursor-pointer transition-all duration-200 hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-input)]"
                     onClick={handleLogout}
                     title="Sair"
                 >
@@ -136,42 +147,42 @@ export default function Home() {
             </header>
 
             {/* Conteúdo principal */}
-            <main className="home-content">
+            <main className="flex-1 w-full max-w-[720px] mx-auto py-8 px-6">
                 <CreatePost
                     onSubmit={(title, content, image) => createPost({ title, content, image })}
                 />
                 {editingPost && (
-                    <div className="modal-overlay" onClick={() => setEditingPost(null)}>
-                        <div className="modal" onClick={(e) => e.stopPropagation()}>
-                            <h2 className="modal__title">Editar Post</h2>
+                    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[100] p-6" onClick={() => setEditingPost(null)}>
+                        <div className="bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-2xl p-7 w-full max-w-[480px] flex flex-col gap-4" onClick={(e) => e.stopPropagation()}>
+                            <h2 className="text-xl font-bold text-[var(--color-text-primary)]">Editar Post</h2>
                             <input
-                                className="modal__input"
+                                className="w-full py-3 px-4 text-[0.9375rem] font-semibold text-[var(--color-text-primary)] bg-[var(--color-bg-input)] border border-[var(--color-border)] rounded-xl outline-none font-[inherit] transition-all duration-200 placeholder:text-[var(--color-text-placeholder)] placeholder:font-normal focus:border-[var(--color-border-focus)] focus:bg-[var(--color-bg-input)] focus:shadow-[0_0_0_3px_rgba(29,155,240,0.1)]"
                                 defaultValue={editingPost.title}
                                 placeholder="Título do post"
                                 onChange={(e) => setEditingPost({ ...editingPost, title: e.target.value })}
                             />
                             <textarea
-                                className="modal__textarea"
+                                className="w-full py-3 px-4 text-sm text-[var(--color-text-secondary)] bg-[var(--color-bg-input)] border border-[var(--color-border)] rounded-xl outline-none resize-y min-h-20 font-[inherit] leading-relaxed transition-all duration-200 placeholder:text-[var(--color-text-placeholder)] focus:border-[var(--color-border-focus)] focus:bg-[var(--color-bg-input)] focus:shadow-[0_0_0_3px_rgba(29,155,240,0.1)]"
                                 defaultValue={editingPost.content}
                                 placeholder="Conteúdo do post"
                                 rows={4}
                                 onChange={(e) => setEditingPost({ ...editingPost, content: e.target.value })}
                             />
                             <input
-                                className="modal__input"
+                                className="w-full py-3 px-4 text-[0.9375rem] font-semibold text-[var(--color-text-primary)] bg-[var(--color-bg-input)] border border-[var(--color-border)] rounded-xl outline-none font-[inherit] transition-all duration-200 placeholder:text-[var(--color-text-placeholder)] placeholder:font-normal focus:border-[var(--color-border-focus)] focus:bg-[var(--color-bg-input)] focus:shadow-[0_0_0_3px_rgba(29,155,240,0.1)]"
                                 defaultValue={editingPost.image || ''}
                                 placeholder="URL da imagem (opcional)"
                                 onChange={(e) => setEditingPost({ ...editingPost, image: e.target.value })}
                             />
-                            <div className="modal__actions">
+                            <div className="flex items-center justify-end gap-2.5 mt-1">
                                 <button
-                                    className="modal__btn modal__btn--cancel"
+                                    className="py-2 px-5 text-[0.8125rem] font-semibold rounded-full cursor-pointer transition-all duration-200 font-[inherit] text-[var(--color-text-secondary)] bg-transparent border border-[var(--color-border)] hover:text-[var(--color-text-primary)] hover:border-[var(--color-text-placeholder)]"
                                     onClick={() => setEditingPost(null)}
                                 >
                                     Cancelar
                                 </button>
                                 <button
-                                    className="modal__btn modal__btn--save"
+                                    className="py-2 px-5 text-[0.8125rem] font-semibold rounded-full cursor-pointer transition-all duration-200 font-[inherit] text-[var(--color-text-primary)] bg-[var(--color-accent)] border-none hover:bg-[var(--color-accent-hover)]"
                                     onClick={() => updatePost({ id: editingPost.id, title: editingPost.title, content: editingPost.content, image: editingPost.image })}
                                 >
                                     Salvar
@@ -189,8 +200,8 @@ export default function Home() {
             </main>
 
             {/* Footer */}
-            <footer className="home-footer">
-                <span className="home-footer__logo">Mini Twitter</span>
+            <footer className="py-4 px-8 bg-[var(--color-bg-header)] backdrop-blur-md border-t border-[var(--color-border)]">
+                <span className="text-sm font-semibold text-[var(--color-text-secondary)]">Mini Twitter</span>
             </footer>
         </div>
     )

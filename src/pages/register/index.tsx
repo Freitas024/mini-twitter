@@ -38,23 +38,23 @@ export default function Register() {
     }
 
     return (
-        <div className="login-page">
-            <div className="login-container">
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[var(--color-bg-primary)] via-[var(--color-bg-secondary)] to-[var(--color-bg-primary)] p-6 font-[Inter,system-ui,sans-serif]">
+            <div className="w-full max-w-[440px] flex flex-col items-center">
                 {/* Título */}
-                <h1 className="login-title">Mini Twitter</h1>
+                <h1 className="text-3xl font-extrabold text-[var(--color-text-primary)] tracking-tight mb-10 text-center">Mini Twitter</h1>
 
                 {/* Tabs */}
-                <div className="login-tabs">
+                <div className="flex w-full border-b border-[var(--color-border)] mb-8">
                     <button
                         type="button"
-                        className={`login-tab ${activeTab === 'login' ? 'login-tab--active' : ''}`}
+                        className={`flex-1 py-3.5 text-[0.9375rem] font-medium bg-transparent border-none cursor-pointer relative transition-colors duration-250 hover:text-[var(--color-text-secondary)] ${activeTab === 'login' ? 'text-[var(--color-text-primary)] tab-active' : 'text-[var(--color-text-muted)]'}`}
                         onClick={() => handleTabChange('login')}
                     >
                         Login
                     </button>
                     <button
                         type="button"
-                        className={`login-tab ${activeTab === 'register' ? 'login-tab--active' : ''}`}
+                        className={`flex-1 py-3.5 text-[0.9375rem] font-medium bg-transparent border-none cursor-pointer relative transition-colors duration-250 hover:text-[var(--color-text-secondary)] ${activeTab === 'register' ? 'text-[var(--color-text-primary)] tab-active' : 'text-[var(--color-text-muted)]'}`}
                         onClick={() => handleTabChange('register')}
                     >
                         Cadastrar
@@ -62,15 +62,15 @@ export default function Register() {
                 </div>
 
                 {/* Cabeçalho do formulário */}
-                <div className="login-header">
-                    <h2 className="login-greeting">Olá, vamos começar!</h2>
-                    <p className="login-subtitle">
+                <div className="w-full mb-7">
+                    <h2 className="text-2xl font-bold text-[var(--color-text-primary)] mb-2">Olá, vamos começar!</h2>
+                    <p className="text-sm text-[var(--color-text-muted)] leading-relaxed">
                         Por favor, insira os dados solicitados para fazer cadastro.
                     </p>
                 </div>
 
                 {/* Formulário */}
-                <form onSubmit={handleSubmit(onSubmit)} className="login-form">
+                <form onSubmit={handleSubmit(onSubmit)} className="w-full flex flex-col gap-5">
                     <Input
                         id="name"
                         type="text"
@@ -79,7 +79,7 @@ export default function Register() {
                         icon={<User size={20} />}
                         {...register('name')}
                     />
-                    {errors.name && <p className="error-message text-red-500">{errors.name.message}</p>}
+                    {errors.name && <p className="text-red-500">{errors.name.message}</p>}
 
                     <Input
                         id="email"
@@ -89,7 +89,7 @@ export default function Register() {
                         icon={<Mail size={20} />}
                         {...register('email')}
                     />
-                    {errors.email && <p className="error-message text-red-500">{errors.email.message}</p>}
+                    {errors.email && <p className="text-red-500">{errors.email.message}</p>}
 
                     <Input
                         id="password"
@@ -100,7 +100,7 @@ export default function Register() {
                         onActionClick={() => setShowPassword(!showPassword)}
                         {...register('password')}
                     />
-                    {errors.password && <p className="error-message text-red-500">{errors.password.message}</p>}
+                    {errors.password && <p className="text-red-500">{errors.password.message}</p>}
 
                     <Button type="submit" isLoading={isSubmitting}>
                         Continuar
@@ -108,14 +108,14 @@ export default function Register() {
                 </form>
 
                 {/* Rodapé */}
-                <p className="login-footer">
+                <p className="mt-7 text-xs text-[var(--color-text-placeholder)] text-center leading-relaxed">
                     Ao clicar em continuar, você concorda com nossos
                     <br />
-                    <a href="#" className="login-footer-link">
+                    <a href="#" className="text-[var(--color-text-secondary)] no-underline transition-colors duration-200 hover:text-[var(--color-accent)] hover:underline">
                         Termos de Serviço
                     </a>{' '}
                     e{' '}
-                    <a href="#" className="login-footer-link">
+                    <a href="#" className="text-[var(--color-text-secondary)] no-underline transition-colors duration-200 hover:text-[var(--color-accent)] hover:underline">
                         Política de Privacidade
                     </a>
                     .

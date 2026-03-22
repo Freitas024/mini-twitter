@@ -20,51 +20,51 @@ export default function PostCard({ post, onLike, onEdit, onDelete }: PostCardPro
     const isOwner = post.authorId === currentUserId;
 
     return (
-        <div className="post-card">
+        <div className="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-2xl p-5 mb-4 transition-colors duration-200 hover:border-[var(--color-border-focus)]">
             {/* Header do post */}
-            <div className="post-card__header">
-                <span className="post-card__author">{post.authorName}</span>
-                <span className="post-card__username">@{username}</span>
-                <span className="post-card__separator">·</span>
-                <span className="post-card__date">{formattedDate}</span>
+            <div className="flex items-center gap-1.5 mb-2.5 flex-wrap">
+                <span className="text-[0.9375rem] font-semibold text-[var(--color-text-primary)]">{post.authorName}</span>
+                <span className="text-[0.8125rem] text-[var(--color-text-muted)]">@{username}</span>
+                <span className="text-[0.8125rem] text-[var(--color-text-placeholder)]">·</span>
+                <span className="text-[0.8125rem] text-[var(--color-text-muted)]">{formattedDate}</span>
             </div>
 
             {/* Conteúdo */}
-            <h3 className="post-card__title">{post.title}</h3>
-            <p className="post-card__content">{post.content}</p>
+            <h3 className="text-base font-bold text-[var(--color-text-primary)] mb-1.5 leading-[1.4]">{post.title}</h3>
+            <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed mb-3">{post.content}</p>
 
             {/* Imagem (opcional) */}
             {post.image && (
-                <div className="post-card__image-wrapper">
+                <div className="mb-3 rounded-xl overflow-hidden">
                     <img
                         src={post.image}
                         alt={post.title}
-                        className="post-card__image"
+                        className="w-full block object-cover max-h-80"
                     />
                 </div>
             )}
 
             {/* Ações */}
-            <div className="post-card__actions">
+            <div className="flex items-center justify-between">
                 <button
                     type="button"
-                    className={`post-card__like ${post.likedByMe ? 'post-card__like--active' : ''}`}
+                    className={`flex items-center gap-1.5 bg-transparent border-none cursor-pointer p-1 rounded-md transition-colors duration-200 hover:text-[var(--color-like)] ${post.likedByMe ? 'text-[var(--color-like)]' : 'text-[var(--color-text-muted)]'}`}
                     onClick={() => onLike?.(post.id)}
                 >
                     <Heart
                         size={18}
-                        fill={post.likedByMe ? '#f91880' : 'none'}
+                        fill={post.likedByMe ? 'var(--color-like)' : 'none'}
                     />
                     {post.likesCount > 0 && (
-                        <span className="post-card__like-count">{post.likesCount}</span>
+                        <span className="text-[0.8125rem] font-medium text-[var(--color-text-primary)]">{post.likesCount}</span>
                     )}
                 </button>
 
                 {isOwner && (
-                    <div className="post-card__owner-actions">
+                    <div className="flex items-center gap-1">
                         <button
                             type="button"
-                            className="post-card__action-btn post-card__action-btn--edit"
+                            className="flex items-center justify-center p-1.5 bg-transparent border-none rounded-lg cursor-pointer text-[var(--color-text-muted)] transition-all duration-200 hover:text-[var(--color-accent)] hover:bg-[var(--color-bg-input)]"
                             onClick={() => onEdit?.(post)}
                             title="Editar"
                         >
@@ -72,7 +72,7 @@ export default function PostCard({ post, onLike, onEdit, onDelete }: PostCardPro
                         </button>
                         <button
                             type="button"
-                            className="post-card__action-btn post-card__action-btn--delete"
+                            className="flex items-center justify-center p-1.5 bg-transparent border-none rounded-lg cursor-pointer text-[var(--color-text-muted)] transition-all duration-200 hover:text-[#f4212e] hover:bg-[var(--color-bg-input)]"
                             onClick={() => onDelete?.(post.id)}
                             title="Deletar"
                         >
