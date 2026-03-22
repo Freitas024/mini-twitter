@@ -5,8 +5,8 @@ export const authService = {
         return api.post('/auth/register', { name, email, password });
     },
 
-    login: (email: string, password: string): Promise<{ token: string }> => {
-        return api.post('/auth/login', { email, password, }).then(response => response.data);
+    login: (email: string, password: string): Promise<{ token: string, user: { id: number, email: string, name: string } }> => {
+        return api.post('/auth/login', { email, password }).then(response => response.data);
     },
 
     logout: () => {

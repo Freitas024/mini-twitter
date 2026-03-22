@@ -25,6 +25,7 @@ export default function Login() {
         try {
             const result = await authService.login(data.email, data.password);
             localStorage.setItem('token', result.token);
+            localStorage.setItem('userId', String(result.user.id));
             navigate('/home');
         } catch (error) {
             console.log(error);
