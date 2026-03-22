@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useAuth } from '../../hooks/useAuth';
 import { useNavigate } from 'react-router-dom'
 import { useInfiniteQuery, useMutation } from '@tanstack/react-query'
 import { LogOut } from 'lucide-react'
@@ -13,17 +14,14 @@ import { createPost as createPostService } from '../../services/postService';
 import { deletePost as deletePostService } from '../../services/postService';
 import { updatePost as updatePostService } from '../../services/postService';
 
-interface HomeProps {
-    toggleTheme: () => void;
-    isDark: boolean;
-}
-export default function Home({ toggleTheme, isDark }: HomeProps) {
+export default function Home() {
     const [search, setSearch] = useState<string>('');
     const [editingPost, setEditingPost] = useState<Post | null>(null)
 
     const navigate = useNavigate()
     const queryClient = useQueryClient();
     const sentinelRef = useRef<HTMLDivElement>(null);
+    const { toggleTheme, isDark } = useAuth();
 
     const { mutate: toggleLike } = useMutation({
         mutationFn: (id: number) => likePost(id),
