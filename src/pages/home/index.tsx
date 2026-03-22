@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom'
-import { useMutation } from '@tanstack/react-query'
+import { useInfiniteQuery, useMutation } from '@tanstack/react-query'
 import { LogOut } from 'lucide-react'
 import { authService } from '../../services/authService';
 import SearchInput from '../../components/SearchInput'
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { getPosts, likePost } from '../../services/postService';
 import PostCard from '../../components/PostCard';
 import CreatePost from '../../components/CreatePost';
@@ -19,12 +19,35 @@ export default function Home() {
 
     const navigate = useNavigate()
     const queryClient = useQueryClient();
+    const sentinelRef = useRef<HTMLDivElement>(null);
 
     const { mutate: toggleLike } = useMutation({
         mutationFn: (id: number) => likePost(id),
-        onSuccess: () => {
+        onMutate: async (postId: number) => {
+            await queryClient.cancelQueries({ queryKey: ['posts', search] })
+            const previous = queryClient.getQueryData(['posts', search])
+            queryClient.setQueryData(['posts', search], (old: any) => {
+                if (!old) return old
+                return {
+                    ...old,
+                    pages: old.pages.map((page: any) => ({
+                        ...page,
+                        posts: page.posts.map((p: Post) =>
+                            p.id === postId
+                                ? { ...p, likedByMe: !p.likedByMe, likesCount: p.likedByMe ? p.likesCount - 1 : p.likesCount + 1 }
+                                : p
+                        )
+                    }))
+                }
+            })
+            return { previous }
+        },
+        onError: (_err, _id, context) => {
+            queryClient.setQueryData(['posts', search], context?.previous)
+        },
+        onSettled: () => {
             queryClient.invalidateQueries({ queryKey: ['posts'] })
-        }
+        },
     });
 
     const { mutate: createPost } = useMutation({
@@ -74,11 +97,28 @@ export default function Home() {
         }
     }
 
-    const { data, isLoading, isError } = useQuery({
+    const { data, isLoading, isError, fetchNextPage, hasNextPage } = useInfiniteQuery({
         queryKey: ['posts', search],
-        queryFn: () => getPosts(undefined, search),
+        queryFn: ({ pageParam }) => getPosts(pageParam, search),
+        initialPageParam: 1,
+        getNextPageParam: (lastPage) => {
+            const totalPages = Math.ceil(lastPage.total / lastPage.limit)
+            return lastPage.page < totalPages ? lastPage.page + 1 : undefined;
+        }
     });
-    console.log(data);
+
+    const posts = data?.pages.flatMap((page) => page.posts) ?? [];
+
+    useEffect(() => {
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting && hasNextPage) {
+                fetchNextPage()
+            }
+        })
+        if (sentinelRef.current) observer.observe(sentinelRef.current)
+        return () => observer.disconnect()
+    }, [fetchNextPage, hasNextPage]);
+
     return (
         <div className="home-page">
             {/* Header */}
@@ -142,9 +182,10 @@ export default function Home() {
                 )}
                 {isLoading && <p>Carregando posts...</p>}
                 {isError && <p>Erro ao carregar posts...</p>}
-                {data && data.posts.map((post) => (
+                {posts && posts.map((post) => (
                     <PostCard key={post.id} post={post} onLike={toggleLike} onDelete={deletePost} onEdit={setEditingPost} />
                 ))}
+                <div ref={sentinelRef} />
             </main>
 
             {/* Footer */}
