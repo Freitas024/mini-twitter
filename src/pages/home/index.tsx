@@ -94,7 +94,7 @@ export default function Home() {
 
     const handleLogout = async () => {
         try {
-            const result = await authService.logout()
+            await authService.logout()
             localStorage.removeItem('token')
             navigate('/')
         } catch (error) {
