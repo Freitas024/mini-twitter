@@ -9,6 +9,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { getPosts, likePost } from '../../services/postService';
 import PostCard from '../../components/PostCard';
 import CreatePost from '../../components/CreatePost';
+import toast from 'react-hot-toast';
 import type { Post } from '../../types';
 import { createPost as createPostService } from '../../services/postService';
 import { deletePost as deletePostService } from '../../services/postService';
@@ -56,6 +57,7 @@ export default function Home() {
         mutationFn: (data: { content: string, title: string, image?: string }) => createPostService(data.content, data.title, data.image),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['posts'] })
+            toast.success('Post criado com sucesso!');
         }
     });
 
@@ -63,6 +65,7 @@ export default function Home() {
         mutationFn: (id: number) => deletePostService(id),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['posts'] })
+            toast.success('Post deletado com sucesso!');
         },
         onError: (error: any) => {
             if (error.response?.status === 403) {
@@ -76,6 +79,7 @@ export default function Home() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['posts'] })
             setEditingPost(null)
+            toast.success('Post atualizado com sucesso!');
         },
         onError: (error: any) => {
             if (error.response?.status === 403) {
@@ -91,7 +95,6 @@ export default function Home() {
     const handleLogout = async () => {
         try {
             const result = await authService.logout()
-            console.log(result);
             localStorage.removeItem('token')
             navigate('/')
         } catch (error) {

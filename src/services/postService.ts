@@ -31,6 +31,6 @@ export function updatePost(id: number, content: string, title: string, image?: s
     return api.put(`/posts/${id}`, {
         content,
         title,
-        image
+        image: image ?? ''
     }).then(response => response.data);
 }
