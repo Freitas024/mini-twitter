@@ -1,73 +1,140 @@
-# React + TypeScript + Vite
+# 🐦 Mini Twitter
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Uma mini rede social desenvolvida como desafio técnico para o processo seletivo da **B2Bit**. O projeto permite que usuários se cadastrem, façam login, publiquem posts, curtam publicações e interajam com outros usuários.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🚀 Tecnologias Utilizadas
 
-## React Compiler
+| Tecnologia | Finalidade |
+|---|---|
+| **React 19** | Biblioteca principal para construção da interface |
+| **TypeScript** | Tipagem estática para maior segurança e produtividade |
+| **Vite** | Bundler e servidor de desenvolvimento |
+| **Tailwind CSS** | Estilização utilitária com suporte a tema claro/escuro |
+| **Axios** | Requisições HTTP para o backend |
+| **TanStack Query** | Gerenciamento de estado do servidor, cache e scroll infinito |
+| **React Hook Form** | Controle de formulários de forma performática |
+| **Zod** | Validação de schemas nos formulários |
+| **React Router DOM** | Navegação entre páginas |
+| **React Hot Toast** | Notificações de feedback ao usuário |
+| **Vitest** | Framework de testes unitários |
+| **React Testing Library** | Testes de componentes React |
+| **Lucide React** | Ícones da interface |
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## ✅ Funcionalidades Implementadas
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 🔐 Autenticação
+- Registro de novo usuário com validação de e-mail
+- Login com armazenamento de JWT no `localStorage`
+- Logout com invalidação do token no backend
+- Rotas protegidas — redireciona para `/login` se não autenticado
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### 📝 Posts
+- Timeline paginada com scroll infinito
+- Busca dinâmica de posts por título
+- Criação de post com título, conteúdo e imagem (URL)
+- Edição de posts próprios
+- Exclusão de posts próprios
+- Botões de editar/deletar visíveis apenas para o autor do post
+- Tratamento do erro 403 em ações não autorizadas
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### ❤️ Interações
+- Curtir e descurtir posts com atualização visual imediata (Optimistic Update)
+- Contador de likes atualizado em tempo real
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+---
+
+## ⭐ Extras Implementados
+
+- ✅ **Scroll Infinito** — carregamento automático de posts ao chegar no final da lista
+- ✅ **Modo Dark/Light** — alternância de tema com persistência no `localStorage`
+- ✅ **Estado Global** — Context API para gerenciar tema e dados do usuário autenticado
+- ✅ **Testes Unitários** — Vitest + React Testing Library cobrindo os componentes principais
+
+---
+
+## 📁 Estrutura do Projeto
+
+```
+src/
+├── components/       # Componentes reutilizáveis (PostCard, CreatePost, Button, Input...)
+├── contexts/         # Context API (AuthContext)
+├── hooks/            # Hooks customizados (useAuth)
+├── lib/              # Configuração do Axios com interceptor de token
+├── pages/            # Páginas da aplicação (home, login, register)
+├── services/         # Funções de comunicação com a API (authService, postService)
+├── styles/           # Estilos globais e variáveis de tema CSS
+├── types/            # Interfaces e tipos TypeScript
+└── validations/      # Schemas de validação com Zod
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🛠️ Como Rodar o Projeto
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Pré-requisitos
+- Node.js 18+
+- pnpm
+- Docker (para o backend)
+
+### 1. Clone o repositório
+
+```bash
+git clone https://github.com/Freitas024/mini-twitter.git
+cd mini-twitter
 ```
+
+### 2. Suba o backend com Docker
+
+```bash
+cd mini-twitter-backend
+docker-compose up -d
+```
+
+O backend estará disponível em `http://localhost:3000`.
+
+Para popular o banco com dados iniciais:
+```bash
+docker exec -it <nome_do_container> bun run seed
+```
+
+### 3. Instale as dependências do frontend
+
+```bash
+pnpm install
+```
+
+### 4. Inicie o servidor de desenvolvimento
+
+```bash
+pnpm dev
+```
+
+O frontend estará disponível em `http://localhost:5173`.
+
+---
+
+## 🧪 Rodando os Testes
+
+```bash
+pnpm test
+```
+
+---
+
+## 💡 Decisões Técnicas
+
+- **TanStack Query com `useInfiniteQuery`** — escolhido para implementar o scroll infinito de forma nativa, gerenciando cache por página automaticamente.
+- **Optimistic Update no like** — como o backend não retorna o campo `likedByMe` na listagem de posts, o estado visual do like é atualizado imediatamente no cache local sem aguardar a resposta da API, proporcionando melhor experiência ao usuário.
+- **Context API em vez de Zustand** — para o escopo do projeto, a Context API nativa do React foi suficiente para gerenciar o tema e os dados do usuário, evitando dependências desnecessárias.
+- **Interceptor no Axios** — o token JWT é injetado automaticamente em todas as requisições via interceptor, eliminando a necessidade de passar o header manualmente em cada chamada.
+- **Zod + React Hook Form** — a integração via `zodResolver` permite definir as regras de validação em um único lugar e reutilizá-las tanto na validação do formulário quanto na tipagem TypeScript via `z.infer`.
+
+---
+
+## 👨‍💻 Desenvolvido por
+
+**Vinicius de Freitas e Silva**
